@@ -1,56 +1,56 @@
 steps:
-  # Step 1: Android SDK 설치 및 빌드
-  - name: 'gradle:8.4.0-jdk17'
+  # Step 1: Android 빌드 이미지 빌드 (캐시 사용)
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'gcr.io/$PROJECT_ID/android-builder:latest'
+      - '--cache-from'
+      - 'gcr.io/$PROJECT_ID/android-builder:latest'
+      - '.'
+    id: 'build-image'
+
+  # Step 2: 빌드 이미지를 Registry에 Push (캐시 저장)
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'push'
+      - 'gcr.io/$PROJECT_ID/android-builder:latest'
+    id: 'push-image'
+    waitFor: ['build-image']
+
+  # Step 3: APK 빌드
+  - id: 'build-apk'
+    name: 'gcr.io/$PROJECT_ID/android-builder:latest'
     entrypoint: 'bash'
     args:
       - '-c'
       - |
-        set -e
-
-        # Install Android SDK Command Line Tools
-        apt-get update -qq && apt-get install -y -qq wget unzip
-
-        mkdir -p /opt/android-sdk/cmdline-tools
-        wget -q https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip -O /tmp/cmdtools.zip
-        unzip -q /tmp/cmdtools.zip -d /opt/android-sdk/cmdline-tools
-        mv /opt/android-sdk/cmdline-tools/cmdline-tools /opt/android-sdk/cmdline-tools/latest
-        rm /tmp/cmdtools.zip
-
-        export ANDROID_HOME=/opt/android-sdk
-        export PATH=$$PATH:/opt/android-sdk/cmdline-tools/latest/bin:/opt/android-sdk/platform-tools
-
-        # Accept licenses and install SDK
-        yes | /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager --licenses > /dev/null 2>&1 || true
-        /opt/android-sdk/cmdline-tools/latest/bin/sdkmanager "platforms;android-34" "build-tools;34.0.0" "platform-tools"
-
-        # Build APK
+        set -ex
         chmod +x gradlew
-        ./gradlew assembleDebug --no-daemon
-
-        # Copy APK to workspace root for upload
+        ./gradlew assembleDebug --no-daemon --stacktrace
         cp app/build/outputs/apk/debug/app-debug.apk /workspace/elevator-call-debug.apk
-        echo "Build completed: elevator-call-debug.apk"
+        echo "APK 빌드 완료"
     env:
-      - 'ANDROID_HOME=/opt/android-sdk'
       - 'GRADLE_OPTS=-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2g'
+    waitFor: ['push-image']
 
-  # Step 2: APK를 GCS 버킷에 업로드
+  # Step 4: APK를 GCS에 업로드
   - name: 'gcr.io/cloud-builders/gsutil'
     args:
       - 'cp'
       - '/workspace/elevator-call-debug.apk'
-      - 'gs://${PROJECT_ID}-artifacts/elevator-call/elevator-call-debug.apk'
+      - 'gs://$PROJECT_ID-artifacts/elevator-call/elevator-call-debug.apk'
+    waitFor: ['build-apk']
 
-# APK 아티팩트 저장
 artifacts:
   objects:
-    location: 'gs://${PROJECT_ID}-artifacts/elevator-call/'
+    location: 'gs://$PROJECT_ID-artifacts/elevator-call/'
     paths:
       - '/workspace/elevator-call-debug.apk'
 
 options:
   machineType: 'E2_HIGHCPU_8'
-  logging: CLOUD_LOGGING_ONLY
   diskSizeGb: 50
+  logging: LEGACY
 
-timeout: '1200s'
+timeout: '1800s'
