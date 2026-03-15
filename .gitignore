@@ -1,0 +1,33 @@
+# Gradle files
+.gradle
+build/
+.gradle/
+
+# Android Studio
+.idea/
+*.iml
+*.ipr
+*.iws
+.DS_Store
+local.properties
+
+# Compiled output
+/app/build/
+*.apk
+*.aar
+*.jks
+*.keystore
+
+# Java/Kotlin
+*.class
+*.jar
+*.log
+
+# Gradle
+gradle/
+gradlew
+gradlew.bat
+
+# Environment
+.env
+.env.local

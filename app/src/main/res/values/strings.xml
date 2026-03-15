@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">엘레베이터 호출</string>
+    <string name="charger_connected">충전기 연결됨</string>
+    <string name="charger_disconnected">충전기 미연결</string>
+    <string name="call_elevator">엘레베이터 호출</string>
+    <string name="check_status">상태 확인</string>
+    <string name="last_floor">마지막 층: %s</string>
+    <string name="last_update">마지막 업데이트: %s</string>
+    <string name="status">상태</string>
+    <string name="log">로그</string>
+    <string name="service_notification_title">엘레베이터 호출 서비스</string>
+    <string name="service_notification_message">백그라운드에서 실행 중입니다</string>
+    <string name="elevator_called">호출하였습니다. 현재 %s층 입니다.</string>
+    <string name="call_success">호출 성공</string>
+    <string name="status_success">상태 확인 성공</string>
+    <string name="error_network">네트워크 오류</string>
+    <string name="error_parsing">파싱 오류</string>
+</resources>

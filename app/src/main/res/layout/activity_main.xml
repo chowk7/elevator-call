@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_normal">
+
+    <TextView
+        android:id="@+id/charger_status"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/charger_disconnected"
+        android:textSize="@dimen/text_size_large"
+        android:textColor="@android:color/black"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/padding_normal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/padding_normal">
+
+        <Button
+            android:id="@+id/call_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/call_elevator"
+            android:layout_marginEnd="@dimen/padding_small" />
+
+        <Button
+            android:id="@+id/status_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/check_status" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/floor_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/last_floor"
+        android:textSize="@dimen/text_size_normal"
+        android:layout_marginBottom="@dimen/padding_small" />
+
+    <TextView
+        android:id="@+id/update_time"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/last_update"
+        android:textSize="@dimen/text_size_small"
+        android:layout_marginBottom="@dimen/padding_normal" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/log"
+        android:textSize="@dimen/text_size_normal"
+        android:textStyle="bold"
+        android:layout_marginBottom="@dimen/padding_small" />
+
+    <ScrollView
+        android:id="@+id/log_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_marginTop="@dimen/padding_small"
+        android:background="@android:color/darker_gray">
+
+        <TextView
+            android:id="@+id/log_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size_small"
+            android:textColor="@android:color/white"
+            android:padding="@dimen/padding_small"
+            android:textIsSelectable="true" />
+
+    </ScrollView>
+
+</LinearLayout>
