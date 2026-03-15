@@ -34,13 +34,22 @@ steps:
       - 'GRADLE_OPTS=-Dorg.gradle.daemon=false -Dorg.gradle.jvmargs=-Xmx2g'
     waitFor: ['push-image']
 
-  # Step 4: APK를 GCS에 업로드
+  # Step 4: GCS 버킷 생성 (없으면)
+  - id: 'create-bucket'
+    name: 'gcr.io/cloud-builders/gsutil'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'gsutil mb -p $PROJECT_ID gs://$PROJECT_ID-artifacts || true'
+    waitFor: ['build-apk']
+
+  # Step 5: APK를 GCS에 업로드
   - name: 'gcr.io/cloud-builders/gsutil'
     args:
       - 'cp'
       - '/workspace/elevator-call-debug.apk'
       - 'gs://$PROJECT_ID-artifacts/elevator-call/elevator-call-debug.apk'
-    waitFor: ['build-apk']
+    waitFor: ['create-bucket']
 
 artifacts:
   objects:
