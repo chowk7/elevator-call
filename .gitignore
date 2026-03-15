@@ -20,13 +20,14 @@ local.properties
 
 # Java/Kotlin
 *.class
-*.jar
 *.log
 
-# Gradle
-gradle/
-gradlew
-gradlew.bat
+# Gradle (keep wrapper, ignore caches)
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+!gradle/wrapper/gradle-wrapper.properties
+!gradlew
+!gradlew.bat
 
 # Environment
 .env
