@@ -5,7 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import android.widget.Button
 import android.widget.ScrollView
 import android.widget.TextView
@@ -36,6 +38,7 @@ class MainActivity : AppCompatActivity() {
         registerUIReceivers()
         updateChargerStatus()
         loadLogs()
+        requestBatteryOptimizationException()
     }
 
     private fun initViews() {
@@ -136,6 +139,23 @@ class MainActivity : AppCompatActivity() {
 
         runOnUiThread {
             logTV.text = logs
+        }
+    }
+
+    private fun requestBatteryOptimizationException() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val powerManager = getSystemService(PowerManager::class.java)
+            if (!powerManager.isIgnoringBatteryOptimizations(packageName)) {
+                val intent = Intent(
+                    android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                    android.net.Uri.parse("package:$packageName")
+                )
+                try {
+                    startActivity(intent)
+                } catch (e: Exception) {
+                    // 시스템에서 지원하지 않으면 무시
+                }
+            }
         }
     }
 
